@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,6 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY"),
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['*']
+load_dotenv()
 
 
 # Application definition
@@ -50,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'todolist.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -76,6 +77,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
+        'DATABASE_URL': os.environ.get('DATABASE_URL'),
         'ENGINE': os.environ.get("DB_ENGINE"),
         'NAME': os.environ.get("DB_NAME"),
         'USER': os.environ.get("DB_USER"),
@@ -84,7 +86,7 @@ DATABASES = {
         'PORT': os.environ.get("DB_PORT")
     }
 }
-
+AUTH_USER_MODEL = 'core.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
