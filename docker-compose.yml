@@ -1,0 +1,64 @@
+version: "3.9"
+
+services:
+  front:
+    depends_on:
+      - api
+    build:
+      context:
+        ./frontend/docker
+    ports:
+      - 8000:8000
+    networks:
+      - main
+  api:
+    build:
+      context:
+        ./backend
+    expose:
+      - 8000
+    depends_on:
+      - migrations
+      - postgres
+    volumes:
+      - ./backend:/usr/src/app
+    networks:
+      - main
+  migrations:
+    build:
+      context:
+        ./backend
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend/core/migrations:/usr/src/app/backend/core/migrations
+    command:
+      python ./manage.py makemigrations && python ./manage.py makemigrations core && python manage.py migrate
+    networks:
+      - main
+  postgres:
+    image: postgres:14.6-alpine
+    ports:
+      - 5433:5432
+
+    environment:
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - main
+volumes:
+  postgres_data:
+  frontend:
+networks:
+  main:
