@@ -4,36 +4,37 @@ services:
   front:
     depends_on:
       - api
-    build:
-      context:
-        ./frontend/docker
+    image: sermalenk/skypro-front:base
     ports:
-      - 8000:8000
-    networks:
-      - main
+      - 3000:80
   api:
     build:
-      context:
-        ./backend
-    expose:
-      - 8000
+      context: .
+    ports:
+      - 8001:8000
     depends_on:
       - migrations
       - postgres
+    command:
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    links:
+      - postgres
     volumes:
-      - ./backend:/usr/src/app
-    networks:
-      - main
+      - ./:/usr/src/app
+
+
   migrations:
     build:
       context:
-        ./backend
+        .
     depends_on:
       - postgres
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
-    command:
-      python ./manage.py makemigrations && python ./manage.py makemigrations core && python manage.py migrate
+    command: >
+      sh -c "python manage.py makemigrations &&
+            python manage.py makemigrations core &&
+             python manage.py migrate"
     networks:
       - main
   postgres:
