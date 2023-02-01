@@ -25,14 +25,14 @@ jobs:
       - name: render configs
         run: |
           mkdir deploy
-          cat docker-compose-ci.yaml
+          cat docker-compose-ci.yml
       - name: clone files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "deploy/docker-compose.yaml,deploy/docker_config.py"
+          source: "deploy/docker-compose.yml,deploy/docker_config.py"
           target: "todo"
           strip_components: 1
       - name: run docker-compose
