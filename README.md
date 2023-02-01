@@ -13,3 +13,6 @@
 
 при ошибке токена -  <b>export DOCKER_BUILDKIT=0</b>  
 <b>export COMPOSE_DOCKER_CLI_BUILD=0</b>
+<h2>Авторизация на сервере</h2>
+логин - deploy@51.250.94.235
+пароль - 0000

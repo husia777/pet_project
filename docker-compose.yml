@@ -8,8 +8,7 @@ services:
     ports:
       - 3000:80
   api:
-    build:
-      context: .
+    image: 'husia777/todo:1'
     ports:
       - 8001:8000
     depends_on:
@@ -24,9 +23,7 @@ services:
 
 
   migrations:
-    build:
-      context:
-        .
+    image: 'husia777/todo:1'
     depends_on:
       - postgres
     volumes:
