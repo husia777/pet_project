@@ -36,7 +36,7 @@ jobs:
           target: "todo"
           strip_components: 1
       - name: run docker-compose
-        uses: appleboy/scp-action@v0.0.10
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.SSH_USERNAME }}
