@@ -9,8 +9,7 @@ services:
       - 80:80
     networks:
       - main
-    links:
-      - api
+
   api:
     image: 'husia777/todo:1'
     ports:
