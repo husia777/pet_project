@@ -6,7 +6,7 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 3000:8000
+      - 3000:80
     expose:
       - 80
   api:
