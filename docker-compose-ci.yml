@@ -6,9 +6,9 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 3000:80
+      - 80:80
     expose:
-      - 80
+      - 8000
   api:
     image: 'husia777/todo:1'
     ports:
