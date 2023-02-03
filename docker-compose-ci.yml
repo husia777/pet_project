@@ -9,6 +9,8 @@ services:
       - 80:80
     expose:
       - 8000
+    networks:
+      - main
   api:
     image: 'husia777/todo:1'
     ports:
@@ -23,7 +25,8 @@ services:
       - postgres
     volumes:
       - ./:/usr/src/app
-
+    networks:
+      - main
 
   migrations:
     image: 'husia777/todo:1'
