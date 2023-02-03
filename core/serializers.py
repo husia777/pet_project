@@ -4,6 +4,8 @@ from core.models import User
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
+    password_repeat = serializers.CharField(max_length=255)
+
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password', 'password_repeat']
