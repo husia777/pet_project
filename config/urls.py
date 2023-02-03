@@ -19,10 +19,9 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-import core.urls
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(core.urls)),
+    path('', include('core.urls')),
 
 ]
  
