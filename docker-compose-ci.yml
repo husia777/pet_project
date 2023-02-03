@@ -6,9 +6,11 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 8080:80
+      - 80:80
     networks:
       - main
+    links:
+      - api
   api:
     image: 'husia777/todo:1'
     ports:
