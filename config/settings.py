@@ -28,8 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY"),
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ['*']
-load_dotenv()
-
+load_dotenv(BASE_DIR / '.env')
 
 # Application definition
 
