@@ -6,7 +6,7 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 3000:8000
+      - 3000:80
     expose:
       - 80
   api:
@@ -42,6 +42,7 @@ services:
       - 5433:5432
 
     environment:
+      - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
