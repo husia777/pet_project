@@ -40,13 +40,15 @@ services:
   postgres:
     image: postgres:14.6-alpine
     ports:
-      - 5433:5432
-
+      - '5433:5432'
     environment:
       - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+    networks:
+      - main
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -56,8 +58,7 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
-    networks:
-      - main
+
 volumes:
   postgres_data:
   frontend:
