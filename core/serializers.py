@@ -1,9 +1,10 @@
 from rest_framework import serializers
+from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 
 from core.models import User
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
+class UserRegisterSerializer(BaseUserRegistrationSerializer):
     password_repeat = serializers.CharField(max_length=255)
 
     class Meta:
