@@ -61,7 +61,7 @@ services:
     networks:
       - main
   nginx:
-    build: ./nginx
+    build: ../nginx
     restart: always
     ports:
       - 80:80
