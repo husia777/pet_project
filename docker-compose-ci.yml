@@ -23,7 +23,7 @@ services:
 
     volumes:
       - ./:/usr/src/app
-      - static_volume:/home/app/web/staticfiles
+      - static_volume:/usr/src/app/web/staticfiles
     networks:
       - main
 
@@ -65,7 +65,7 @@ services:
     restart: unless-stopped
     tty: true
     volumes:
-      - static_volume:/home/app/web/staticfiles
+      - static_volume:/usr/src/app/web/staticfiles
     ports:
       - "1337:80"
       - "80:80"
