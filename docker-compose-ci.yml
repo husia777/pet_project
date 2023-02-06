@@ -23,6 +23,8 @@ services:
 
     volumes:
       - ./:/usr/src/app 
+      - staticfiles:/core/staticfiles
+
     networks:
       - main
 
@@ -61,7 +63,7 @@ services:
   web:
     image: nginx
     volumes:
-    - ./templates:/etc/nginx/templates
+      - staticfiles:/staticfiles
     ports:
     - "8080:80"
     environment:
@@ -72,6 +74,6 @@ services:
 volumes:
   postgres_data:
   frontend:
-  
+  staticfiles:
 networks:
   main:
