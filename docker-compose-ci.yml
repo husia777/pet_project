@@ -1,14 +1,15 @@
 version: "3.9"
 
 services:
-  front:
-    depends_on:
-      - api
-    image: sermalenk/skypro-front:base
+  frontend:
+    image: sermalenk/skypro-front:lesson-38
     ports:
-      - 8080:80
-    
-
+      - "80:80"
+    depends_on:
+      - postgres
+      - api
+    networks:
+      - front
   api:
     image: 'husia777/todo:1'
     ports:
@@ -16,17 +17,18 @@ services:
     expose:
       - 8000
     depends_on:
-      - migrations
-      - postgres
+      migrations:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
     command: >
-      sh -c "gunicorn -b 0.0.0.0:8000 config.wsgi:application"
+      sh -c "python manage.py runserver"
 
     volumes:
       - ./:/app
       - static_volume:/usr/src/app/staticfiles
       - media_volume:/usr/src/app/mediafiles
-    
-
+  
   migrations:
     image: 'husia777/todo:1'
     depends_on:
@@ -37,11 +39,12 @@ services:
       sh -c "python manage.py makemigrations &&
             python manage.py makemigrations core &&
              python manage.py migrate"
-   
+    networks:
+      - db
   postgres:
     image: postgres:14.6-alpine
     ports:
-      - 5433:5432
+      - 5432:5432
 
     environment:
       - POSTGRES_USER=${DB_USER}
@@ -56,21 +59,10 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
-    
-  nginx:
-    image: nginx:latest
-    restart: always
-    ports:
-      - 80:80
-    
-    volumes:
-      - ../nginx/nginx.conf:/etc/nginx/conf.d 
-      - static_volume:/usr/src/app/staticfiles
-      - media_volume:/usr/src/app/mediafiles
-    depends_on:
-      - api
-volumes:
-  postgres_data:
-  frontend:
-  static_volume:
-  media_volume:
+
+  volumes:
+    postgres_data:
+    frontend:
+  networks:
+    db:
+    front:
