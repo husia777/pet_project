@@ -58,6 +58,14 @@ services:
     restart: unless-stopped
     networks:
       - main
+  nginx:
+     build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      api
 volumes:
   postgres_data:
   frontend:
