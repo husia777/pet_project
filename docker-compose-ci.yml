@@ -65,7 +65,9 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      - 80:80
+      - 81:80
+    expose:
+      - 80
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/usr/src/app/staticfiles
