@@ -23,8 +23,8 @@ services:
 
     volumes:
       - ./:/app
-      - static_volume:/code/staticfiles
-      - media_volume:/code/mediafiles
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/mediafiles
     networks:
       - main
 
@@ -66,8 +66,8 @@ services:
     ports:
       - 80:80
     volumes:
-      - static_volume:/code/staticfiles
-      - media_volume:/code/mediafiles
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/mediafiles
     depends_on:
       - api
 volumes:
