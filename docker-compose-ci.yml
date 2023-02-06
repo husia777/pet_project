@@ -60,11 +60,11 @@ services:
       - main
   nginx:
      build: ./nginx
-    volumes:
+     volumes:
       - static:/static
-    ports:
+     ports:
       - "80:80"
-    depends_on:
+     depends_on:
       api
 volumes:
   postgres_data:
