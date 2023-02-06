@@ -61,13 +61,12 @@ services:
     networks:
       - main
   nginx:
-    build: 
-      context: ../nginx
-      dockerfile: Dockerfile
+    image: nginx:latest
     restart: always
     ports:
       - 80:80
     volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/usr/src/app/staticfiles
       - media_volume:/usr/src/app/mediafiles
     depends_on:
