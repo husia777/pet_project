@@ -19,10 +19,11 @@ services:
     depends_on:
       - migrations
       - postgres
-    command:
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+
     volumes:
       - ./:/usr/src/app
+      - static_volume:/home/app/web/staticfiles
     networks:
       - main
 
@@ -59,11 +60,14 @@ services:
     networks:
       - main
   webserver:
-    image: nginx:alpine
+    build: ./nginx
     container_name: webserver
     restart: unless-stopped
     tty: true
+    volumes:
+      - static_volume:/home/app/web/staticfiles
     ports:
+      - "1337:80"
       - "80:80"
       - "443:443"
     networks:
