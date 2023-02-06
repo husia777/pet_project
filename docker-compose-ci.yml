@@ -23,7 +23,7 @@ services:
 
     volumes:
       - ./:/usr/src/app 
-      - static_volume:/usr/src/app/staticfiles
+
     networks:
       - main
 
@@ -64,8 +64,6 @@ services:
     container_name: webserver
     restart: unless-stopped
     tty: true
-    volumes:
-      - static_volume:/usr/src/app/staticfiles
     ports:
       - "1337:80"
       - "80:80"
@@ -75,6 +73,6 @@ services:
 volumes:
   postgres_data:
   frontend:
-  static_volume:
+
 networks:
   main:
