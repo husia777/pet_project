@@ -6,7 +6,7 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 8080:81
+      - 8080:80
     
 
   api:
@@ -61,9 +61,8 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      - 81:80
-    expose:
-      - 81
+      - 80:80
+    
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/conf.d 
       - static_volume:/usr/src/app/staticfiles
