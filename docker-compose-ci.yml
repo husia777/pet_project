@@ -19,10 +19,12 @@ services:
     depends_on:
       - migrations
       - postgres
-    command:
-      sh -c "gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000
+
     volumes:
-      - ./:/usr/src/app
+      - ./:/app
+      - static_volume:/code/staticfiles
+      - media_volume:/code/mediafiles
     networks:
       - main
 
@@ -44,9 +46,9 @@ services:
       - 5433:5432
 
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -59,15 +61,19 @@ services:
     networks:
       - main
   nginx:
-     build: ./nginx
-     volumes:
-      - static:/static
-     ports:
-      - "80:80"
-     depends_on:
+    build: ./nginx
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/code/staticfiles
+      - media_volume:/code/mediafiles
+    depends_on:
       - api
 volumes:
   postgres_data:
   frontend:
+  static_volume:
+  media_volume:
 networks:
   main:
