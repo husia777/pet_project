@@ -38,9 +38,6 @@ services:
       - db
   postgres:
     image: postgres:14.6-alpine
-    ports:
-      - 5433:5432
-
     environment:
       - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
