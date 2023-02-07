@@ -25,6 +25,7 @@ services:
       - ./:/app
 
 
+
   migrations:
     image: 'husia777/todo:1'
     depends_on:
