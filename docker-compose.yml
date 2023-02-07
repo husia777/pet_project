@@ -15,8 +15,6 @@ services:
     depends_on:
       - migrations
       - postgres
-    command:
-      sh -c "python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./:/usr/src/app
     restart: always
