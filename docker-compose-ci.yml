@@ -8,7 +8,9 @@ services:
     depends_on:
       - postgres
       - api
-
+    networks:
+      - front
+      - back
   api:
     image: 'husia777/todo:1'
     ports:
@@ -25,7 +27,10 @@ services:
 
     volumes:
       - ./:/app
-
+    networks:
+      - db
+      - front
+      - back
   migrations:
     image: 'husia777/todo:1'
     depends_on:
@@ -36,7 +41,8 @@ services:
       sh -c "python manage.py makemigrations &&
             python manage.py makemigrations core &&
              python manage.py migrate"
-
+    networks:
+      - db
   postgres:
     image: postgres:14.6-alpine
     ports:
@@ -55,7 +61,13 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
+    networks:
+      - db
 
 volumes:
     postgres_data:
     frontend:
+networks:
+  db:
+  front:
+  back:
