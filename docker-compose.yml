@@ -61,7 +61,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
-  frontend:
+    postgres_data:
+    frontend:
 networks:
   main:
