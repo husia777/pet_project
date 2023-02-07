@@ -60,7 +60,7 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  volumes:
+volumes:
     postgres_data:
     frontend:
 networks:
