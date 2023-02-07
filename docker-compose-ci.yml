@@ -26,8 +26,7 @@ services:
 
     volumes:
       - ./:/app
-      - static_volume:/usr/src/app/staticfiles
-      - media_volume:/usr/src/app/mediafiles
+
 
   migrations:
     image: 'husia777/todo:1'
