@@ -2,7 +2,7 @@
 
 FROM python:3.11
 
-WORKDIR /app 
+WORKDIR /usr/src/app
 
 COPY requirements.txt requirements.txt
 RUN /usr/local/bin/python -m pip install --upgrade pip
