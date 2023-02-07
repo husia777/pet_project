@@ -3,10 +3,9 @@ from django.shortcuts import render
 from rest_framework.generics import CreateAPIView
 
 from core.models import User
-from core.serializers import UserRegisterSerializer
+from core.serializers import SignUpSerializer
 
-def index(request):
-    return HttpResponse('<h1>dspogdf</h1>')
-class UserCreateAPIView(CreateAPIView):
-    serializer_class = UserRegisterSerializer
+
+class SignUpView(CreateAPIView):
     queryset = User.objects.all()
+    serializer_class = SignUpSerializer

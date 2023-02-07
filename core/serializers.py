@@ -4,25 +4,25 @@ from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSeria
 from core.models import User
 
 
-class UserRegisterSerializer(BaseUserRegistrationSerializer):
-    password_repeat = serializers.CharField(max_length=255)
+class SignUpSerializer(serializers.ModelSerializer):
+
+    def is_valid(self, raise_exception=False):
+        self._password_repeat = self.initial_data.pop('password_repeat')
+        return super().is_valid(raise_exception=raise_exception)
+
+    def validate(self, data):
+        if data.get('password') != self._password_repeat:
+            raise serializers.ValidationError({'password_repeat': ['Пароли не совпадают']})
+        return data
+
+    def create(self, validated_data):
+        user = User.objects.create(**validated_data)
+        user.set_password(user.password)
+        user.save()
+        return user
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email', 'password', 'password_repeat']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
 
-    def is_valid(self, *, raise_exception=False):
-        if self.initial_data.pop('password') == self.initial_data.pop('password_repeat'):
-            return super().is_valid(raise_exception=True)
-        raise serializers.ValidationError("Пароли не совпадают")
 
-    def create(self, validated_data):
-        user = User(
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data["last_name"],
-            email=validated_data['email']
-        )
-        user.set_password(validated_data["password"])
-        user.save()
-        return user
