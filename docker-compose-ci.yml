@@ -9,7 +9,7 @@ services:
       - postgres
       - api
     networks:
-      - front
+      - main
   api:
     image: 'husia777/todo:1'
     ports:
@@ -39,7 +39,7 @@ services:
             python manage.py makemigrations core &&
              python manage.py migrate"
     networks:
-      - db
+      - main
   postgres:
     image: postgres:14.6-alpine
     ports:
@@ -58,10 +58,9 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
-
-  volumes:
+    networks:
+      - main
+volumes:
     postgres_data:
-    frontend:
 networks:
-  db:
-  front:
+  main:
