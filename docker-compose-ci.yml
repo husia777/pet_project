@@ -11,7 +11,7 @@ services:
     networks:
       - front
   api:
-    build: .
+    image: husia777/todo
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -27,7 +27,7 @@ services:
 
 
   migrations:
-    build: .
+    image: husia777/todo
     depends_on:
       - postgres
     volumes:
