@@ -6,11 +6,11 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 3000:80
+      - 80:80
+    networks:
+      - front
   api:
     image: 'husia777/todo:1'
-    ports:
-      - 8001:8000
     depends_on:
       - migrations
       - postgres
@@ -20,7 +20,9 @@ services:
       - postgres
     volumes:
       - ./:/usr/src/app
-
+    networks:
+      - front
+      - db
 
   migrations:
     image: 'husia777/todo:1'
@@ -33,7 +35,7 @@ services:
             python manage.py makemigrations core &&
              python manage.py migrate"
     networks:
-      - main
+      - db
   postgres:
     image: postgres:14.6-alpine
     ports:
@@ -54,9 +56,9 @@ services:
       start_period: 10s
     restart: unless-stopped
     networks:
-      - main
+      - db
 volumes:
   postgres_data:
-  frontend:
 networks:
-  main:
+  front:
+  db:
