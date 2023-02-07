@@ -2,17 +2,14 @@
 
 FROM python:3.11
 
-
-# set work directory
 WORKDIR /app
 
-# install dependencies
-COPY requirements.txt .
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
-
-# copy project
+COPY requirements.txt requirements.txt
+RUN /usr/local/bin/python -m pip install --upgrade pip
+RUN pip3 install -r requirements.txt
+RUN python -m pip install python-dotenv
 COPY . .
 
-# define the command to run when starting the container
-CMD python manage.py runserver 0.0.0.0:8000
+
+
+

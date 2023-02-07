@@ -6,21 +6,22 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 80:80
-    networks:
-      - front
+      - 3000:80
   api:
     build:
       context: .
+    ports:
+      - 8001:8000
     depends_on:
       - migrations
       - postgres
+    command:
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    links:
+      - postgres
     volumes:
       - ./:/usr/src/app
-    restart: always
-    networks:
-      - front
-      - db
+
 
   migrations:
     build:
@@ -35,16 +36,17 @@ services:
             python manage.py makemigrations core &&
              python manage.py migrate"
     networks:
-      - db
+      - main
   postgres:
     image: postgres:14.6-alpine
+    ports:
+      - 5433:5432
+
     environment:
+      - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-    networks:
-      - db
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -54,9 +56,10 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
-
+    networks:
+      - main
 volumes:
-    postgres_data:
+  postgres_data:
+  frontend:
 networks:
-  front:
-  db:
+  main:

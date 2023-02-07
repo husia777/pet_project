@@ -1,35 +1,29 @@
 version: "3.9"
 
 services:
-  frontend:
-    image: sermalenk/skypro-front:lesson-38
-    ports:
-      - 80:80
+  front:
     depends_on:
-      - postgres
       - api
-    networks:
-      - front
+    image: sermalenk/skypro-front:base
+    ports:
+      - 3000:80
   api:
-    image: husia777/todo
-
+    image: 'husia777/todo:1'
+    ports:
+      - 8001:8000
     depends_on:
-      migrations:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
-    command: >
+      - migrations
+      - postgres
+    command:
       sh -c "python manage.py runserver 0.0.0.0:8000"
+    links:
+      - postgres
     volumes:
-      - ./:/app
-    networks:
-      - front
-      - db
+      - ./:/usr/src/app
 
 
   migrations:
-    image: husia777/todo
-
+    image: 'husia777/todo:1'
     depends_on:
       - postgres
     volumes:
@@ -39,16 +33,17 @@ services:
             python manage.py makemigrations core &&
              python manage.py migrate"
     networks:
-      - db
+      - main
   postgres:
     image: postgres:14.6-alpine
     ports:
-      - 5432:5432
+      - 5433:5432
 
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_HOST=localhost
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -59,9 +54,9 @@ services:
       start_period: 10s
     restart: unless-stopped
     networks:
-      - db
+      - main
 volumes:
-    postgres_data:
+  postgres_data:
+  frontend:
 networks:
-  front:
-  db:
+  main:
