@@ -9,7 +9,7 @@ services:
       - postgres
       - api
     networks:
-      - main
+      - front
   api:
     image: 'husia777/todo:1'
     depends_on:
@@ -19,11 +19,11 @@ services:
         condition: service_healthy
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
-    expose:
-      - 8000
     volumes:
       - ./:/app
-
+    networks:
+      - front
+      - db
 
 
   migrations:
@@ -37,7 +37,7 @@ services:
             python manage.py makemigrations core &&
              python manage.py migrate"
     networks:
-      - main
+      - db
   postgres:
     image: postgres:14.6-alpine
     ports:
@@ -57,8 +57,9 @@ services:
       start_period: 10s
     restart: unless-stopped
     networks:
-      - main
+      - db
 volumes:
     postgres_data:
 networks:
-  main:
+  front:
+  db:
