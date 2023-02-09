@@ -9,7 +9,7 @@ services:
       - "80:80"
 
   api:
-    image: 'husia777/todo:1'
+    build: .
     depends_on:
       - postgres
     command: python manage.py runserver 0.0.0.0:8000
@@ -19,7 +19,7 @@ services:
       - ./:/usr/src/app
 
   migrations:
-    image: 'husia777/todo:1'
+    build: .
     depends_on:
       - postgres
     environment:
