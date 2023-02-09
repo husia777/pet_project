@@ -6,47 +6,41 @@ services:
       - api
     image: sermalenk/skypro-front:base
     ports:
-      - 3000:80
+      - "80:80"
+
   api:
-    build:
-      context: .
-    ports:
-      - 8001:8000
+    image: 'husia777/todo:1'
     depends_on:
-      - migrations
       - postgres
-    command:
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-    links:
-      - postgres
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
     volumes:
       - ./:/usr/src/app
 
-
   migrations:
-    build:
-      context:
-        .
+    image: 'husia777/todo:1'
     depends_on:
       - postgres
-    volumes:
-      - ./backend/core/migrations:/usr/src/app/backend/core/migrations
-    command: >
-      sh -c "python manage.py makemigrations &&
-            python manage.py makemigrations core &&
-             python manage.py migrate"
-    networks:
-      - main
-  postgres:
-    image: postgres:14.6-alpine
-    ports:
-      - 5433:5432
-
     environment:
-      - POSTGRES_HOST=localhost
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+
+    volumes:
+      - ./backend/core/migrations:/usr/src/app/backend/core/migrations
+    command: >
+      sh -c "python manage.py migrate --noinput"
+  postgres:
+    image: postgres:14.6-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - "POSTGRES_HOST_AUTH_METHOD=trust"
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -56,10 +50,8 @@ services:
       retries: 5
       start_period: 10s
     restart: unless-stopped
-    networks:
-      - main
+    ports:
+      - "5433:5432"
+
 volumes:
   postgres_data:
-  frontend:
-networks:
-  main:
