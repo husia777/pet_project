@@ -51,3 +51,32 @@ class LoginSerializer(serializers.Serializer):
         if not User.objects.filter(username=value).exists():
             raise serializers.ValidationError(["Пользователя с таким логином и паролем не существует"])
         return value
+
+
+class RetrieveUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(required=False, max_length=50)
+    first_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
+    last_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
+    email = serializers.EmailField(required=False, allow_blank=True)
+
+    def validate_username(self, value):
+        current_user = self.context['request'].user
+
+        # check username doesn't exist if it isn't current user
+        if self.Meta.model.objects.filter(username=value).exists() and current_user.username != value:
+            raise serializers.ValidationError(['User with such username already exists'])
+        return value
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'first_name', 'last_name', 'email']
+
+
+class PasswordUpdateSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
