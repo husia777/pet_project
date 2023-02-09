@@ -28,6 +28,10 @@ services:
     image: 'husia777/todo:1'
     depends_on:
       - postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
     command: >
