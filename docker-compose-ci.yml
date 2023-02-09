@@ -29,7 +29,12 @@ services:
       - postgres
     links:
       - postgres
-
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
 
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
