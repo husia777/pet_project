@@ -37,7 +37,7 @@ services:
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
     command: >
-      sh -c "python manage.py migrate --noinput"
+      sh -c "python manage.py makemigrations && python manage.py migrate --noinput"
   postgres:
     image: postgres:14.6-alpine
     environment:
