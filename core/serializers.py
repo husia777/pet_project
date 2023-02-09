@@ -46,3 +46,14 @@ class SignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate_username(self, value):
+        """Ensure username exists"""
+        if not User.objects.filter(username=value).exists():
+            raise serializers.ValidationError(["Пользователя с таким логином и паролем не существует"])
+        return value
