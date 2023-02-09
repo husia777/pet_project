@@ -13,31 +13,26 @@ class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True)
 
     def is_valid(self, raise_exception=False):
-        """Get password_repeat and remove from initial data"""
         self._password_repeat = self.initial_data.pop('password_repeat')
         return super().is_valid(raise_exception=raise_exception)
 
     def validate_username(self, value):
-        """Ensure username doesn't exist"""
         if self.Meta.model.objects.filter(username=value).exists():
             raise serializers.ValidationError(['User with such username already exists'])
         return value
 
     def validate_password(self, value):
-        """Ensure password is valid"""
         validate_password(value)
         return value
 
     def validate(self, data):
-        """Ensure passwords match"""
         print(data.get('password'))
         print(self._password_repeat)
         if data.get('password') != self._password_repeat:
-            raise serializers.ValidationError({'password_repeat': ['Passwords must match']})
+            raise serializers.ValidationError({'password_repeat': ['Пароли не совпадают']})
         return data
 
     def create(self, validated_data):
-        """Create user"""
         user = User.objects.create(**validated_data)
         user.set_password(user.password)
         user.save()
@@ -53,7 +48,6 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
     def validate_username(self, value):
-        """Ensure username exists"""
         if not User.objects.filter(username=value).exists():
             raise serializers.ValidationError(["Пользователя с таким логином и паролем не существует"])
         return value
