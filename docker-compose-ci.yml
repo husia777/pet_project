@@ -15,8 +15,6 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
-    volumes:
-      - ./:/usr/src/app
 
   migrations:
     image: 'husia777/todo:1'
