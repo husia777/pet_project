@@ -2,7 +2,7 @@ from django.contrib.auth import login, authenticate, logout
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST, HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
 
 from .models import User
 from .serializers import SignUpSerializer, LoginSerializer, RetrieveUpdateSerializer, PasswordUpdateSerializer
@@ -45,18 +45,21 @@ class PasswordUpdateView(UpdateAPIView):
     model = User
     permission_classes = [IsAuthenticated]
 
-    def get_object(self):
-        return self.request.user
+    def get_object(self, queryset=None):
+        obj = self.request.user
+        return obj
 
     def update(self, request, *args, **kwargs):
         self.object = self.get_object()
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            if not self.object.check_password(serializer.data.get('old_password')):
-                return Response({"old_password": ["Неверно введен пароль."]}, status=HTTP_400_BAD_REQUEST)
-            self.object.set_password(serializer.data.get('new_password'))
+            # Check old password
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=HTTP_400_BAD_REQUEST)
+            # set_password also hashes the password that the user will get
+            self.object.set_password(serializer.data.get("new_password"))
             self.object.save()
-            return Response(status=HTTP_204_NO_CONTENT)
+            return Response("Success.", status=HTTP_200_OK)
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
