@@ -7,6 +7,6 @@ urlpatterns = [
     path('login', LoginAPIView.as_view()),
     path('profile', UserRetrieveUpdateView.as_view()),
     path('update_password', PasswordUpdateView.as_view()),
-    path('oauth/', include('social_django.urls', namespace='social')),
+
 
 ]
