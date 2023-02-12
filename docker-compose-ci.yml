@@ -20,8 +20,6 @@ services:
     image: 'husia777/todo:1'
     depends_on:
       - postgres
-    links:
-      - postgres
 
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
