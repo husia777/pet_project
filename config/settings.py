@@ -102,6 +102,7 @@ DATABASES = {
 #         'PORT': os.environ.get("DB_PORT")
 #     }
 # }
+
 AUTH_USER_MODEL = 'core.User'
 
 # Password validation
