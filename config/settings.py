@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -143,22 +144,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.vk.VKOAuth2',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-LOGIN_REDIRECT_URL = '/'
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_VK_OAUTH2_KEY = '51549684'
 SOCIAL_AUTH_VK_OAUTH2_SECRET = 'FhYP95GfaskpJyU9hwOC'
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_VK_APP_USER_MODE = 2
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
-SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
 
 REST_FRAMEWORK = {
-   'DEFAULT_AUTHENTICATION_CLASSES': (
-       'rest_framework.authentication.TokenAuthentication',
-   )
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
 # https://oauth.vk.com/authorize?client_id=51549684&redirect_uri=http://127.0.0.1/callback&scope=12&display=popup
