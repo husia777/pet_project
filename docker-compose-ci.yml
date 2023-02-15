@@ -9,17 +9,25 @@ services:
       - "80:80"
 
   api:
-    image: 'husia777/todo:1'
+    build: .
     depends_on:
       - postgres
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
+    volumes:
+      - ./:/usr/src/app
 
   migrations:
-    image: 'husia777/todo:1'
+    build: .
     depends_on:
       - postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5432
 
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
@@ -43,7 +51,7 @@ services:
       start_period: 10s
     restart: unless-stopped
     ports:
-      - "5433:5432"
+      - "5432:5432"
 
 volumes:
   postgres_data:
