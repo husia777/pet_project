@@ -12,7 +12,7 @@ services:
     build: .
     depends_on:
       - postgres
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uvicorn main:app --reload
     ports:
       - "8000:8000"
     volumes:
@@ -32,7 +32,7 @@ services:
     volumes:
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
     command: >
-      sh -c "python manage.py migrate --noinput"
+      sh -c "alembic revision --autogenerate -m'Database creation' && alembic upgrade head"
   postgres:
     image: postgres:14.6-alpine
     environment:
