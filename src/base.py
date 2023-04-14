@@ -1,2 +1,2 @@
-from .database import Base
-from src.auth.models import User
+from database import Base
+from auth.models import User

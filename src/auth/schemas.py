@@ -1,7 +1,9 @@
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, Field
 
 
 class BaseUser(BaseModel):
+    id: Optional[int] = Field(default=None, primary_key=True)
     email: str
     username: str
 
@@ -9,6 +11,9 @@ class BaseUser(BaseModel):
 class UserCreate(BaseUser):
     password: str
     password_repeat: str
+    name: str
+    surname: str
+
 
 class User(BaseUser):
     id: int

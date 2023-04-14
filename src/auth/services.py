@@ -4,14 +4,15 @@ from fastapi import Depends, HTTPException, status
 
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-
 from passlib.hash import bcrypt
+
 
 from pydantic import ValidationError
 
 from sqlalchemy.orm import Session
 
-from . import models, schemas
+from auth import models, schemas
+
 
 from database import get_session
 from config_app import settings
@@ -63,8 +64,8 @@ class AuthService:
 
     @classmethod
     # Создание токена из пользователя
-    def create_token(cls, user: models.User) -> models.Token:
-        user_data = models.User.from_orm(user)    # превращаем модель орм в модель pydantic
+    def create_token(cls, user: models.User) -> schemas.Token:
+        user_data = schemas.User.from_orm(user)    # превращаем модель орм в модель pydantic
         now = datetime.utcnow()
         # формируем токен
         payload = {
@@ -80,19 +81,22 @@ class AuthService:
             settings.jwt_secret,
             algorithm=settings.jwt_algorithm)
         # Возвращаем токен на основе модели pydantic
-        return models.Token(access_token=token)
+        return schemas.Token(access_token=token)
 
     # Создаем юзера
-    def register_new_user(self, user_data: models.UserCreate,) -> models.Token:
-        user = models.User(
-            email=user_data.email,
-            username=user_data.username,
-            password_hash=self.hash_password(user_data.password))
-        self.session.add(user)
-        self.session.commit()
-        return self.create_token(user)
+    def register_new_user(self, user_data: schemas.UserCreate,) -> schemas.Token:
+        if user_data.password == user_data.password_repeat:
+            user = models.User(
+                name=user_data.name,
+                surname=user_data.surname,
+                email=user_data.email,
+                username=user_data.username,
+                hashed_password=self.hash_password(user_data.password))
+            self.session.add(user)
+            self.session.commit()
+            return self.create_token(user)
 
-    def authenticate_user(self, username: str, password: str) -> models.Token:
+    def authenticate_user(self, username: str, password: str) -> schemas.Token:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Incorrect username or password',

@@ -10,7 +10,6 @@ class Settings(BaseSettings):
     server_host: str = '127.0.0.1'
     server_port: int = 8000
     SQLALCHEMY_DATABASE_URL: str
-    database_url: str
 
     jwt_secret: str
     jwt_algorithm: str = 'HS256'

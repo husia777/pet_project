@@ -1,15 +1,17 @@
-
-
 FROM python:3.11
 
+# set work directory
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN /usr/local/bin/python -m pip install --upgrade pip
-RUN pip3 install -r requirements.txt
-RUN python -m pip install python-dotenv
+# set env variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# copy project
 COPY . .
 
-
-
-
+WORKDIR src
