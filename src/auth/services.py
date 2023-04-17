@@ -10,6 +10,7 @@ from passlib.hash import bcrypt
 from pydantic import ValidationError
 
 from sqlalchemy.orm import Session
+from fastapi.responses import JSONResponse
 
 from auth import models, schemas
 
@@ -84,7 +85,7 @@ class AuthService:
         return schemas.Token(access_token=token)
 
     # Создаем юзера
-    def register_new_user(self, user_data: schemas.UserCreate,) -> schemas.Token:
+    def register_new_user(self, user_data: schemas.UserCreate,) -> schemas.BaseUser:
         if user_data.password == user_data.password_repeat:
             user = models.User(
                 name=user_data.name,
@@ -93,8 +94,8 @@ class AuthService:
                 username=user_data.username,
                 hashed_password=self.hash_password(user_data.password))
             self.session.add(user)
-            self.session.commit()
-            return self.create_token(user)
+            self.session.flush()
+            return schemas.BaseUser(username=user.username, email=user.email)
 
     def authenticate_user(self, username: str, password: str) -> schemas.Token:
         exception = HTTPException(

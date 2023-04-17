@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Form, status
 from fastapi.security import OAuth2PasswordRequestForm  # Это форма регистрации и авторизации
 
-from auth.schemas import Token, UserCreate, User
+from auth.schemas import Token, UserCreate, User, BaseUser
 from auth.services import AuthService, get_current_user
 
 
@@ -11,7 +11,7 @@ router = APIRouter(
 )
 
 
-@router.post('/signup/', response_model=Token, status_code=status.HTTP_201_CREATED)
+@router.post('/signup/', response_model=BaseUser, status_code=status.HTTP_201_CREATED)
 def sign_up(
     user_data: UserCreate,
     auth_service: AuthService = Depends(),

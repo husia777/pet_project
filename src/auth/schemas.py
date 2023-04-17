@@ -3,7 +3,6 @@ from pydantic import BaseModel, Field
 
 
 class BaseUser(BaseModel):
-    id: Optional[int] = Field(default=None, primary_key=True)
     email: str
     username: str
 
@@ -16,7 +15,7 @@ class UserCreate(BaseUser):
 
 
 class User(BaseUser):
-    id: int
+    id: Optional[int] = Field(primary_key=True)
 
     class Config:
         orm_mode = True
