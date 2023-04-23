@@ -19,10 +19,10 @@ async def sign_up(
 
 
 @router.post('/login/', response_model=Token)
-def sign_in(
+async def sign_in(
         auth_data: OAuth2PasswordRequestForm = Depends(),
         auth_service: AuthService = Depends()):
-    return auth_service.authenticate_user(
+    return await auth_service.authenticate_user(
         auth_data.username,
         auth_data.password)
 

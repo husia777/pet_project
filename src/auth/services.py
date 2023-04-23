@@ -22,8 +22,10 @@ from config_app import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/sign-in/')
 
+
 def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
     return AuthService.verify_token(token)
+
 
 class AuthService:
     # создание подключения
@@ -99,14 +101,15 @@ class AuthService:
             await self.session.commit()
             return schemas.BaseUser(username=user.username, email=user.email)
 
-    def authenticate_user(self, username: str, password: str) -> schemas.Token:
+    async def authenticate_user(self, username: str, password: str) -> schemas.Token:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Incorrect username or password',
             headers={'WWW-Authenticate': 'Bearer'})
-        user = select(models.User).where(models.User.username == username)
+        user = await self.session.execute(select(models.User).where(models.User.username == username))
+        user = user.scalars().one()
         if not user:
             raise exception
-        if not self.verify_password(password, user.password_hash):
+        if not self.verify_password(password, user.hashed_password):
             raise exception
         return self.create_token(user)
