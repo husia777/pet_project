@@ -8,6 +8,8 @@ from passlib.hash import bcrypt
 
 
 from pydantic import ValidationError
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
@@ -25,7 +27,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
 
 class AuthService:
     # создание подключения
-    def __init__(self, session: Session = Depends(get_session)):
+    def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
     @classmethod
@@ -85,7 +87,7 @@ class AuthService:
         return schemas.Token(access_token=token)
 
     # Создаем юзера
-    def register_new_user(self, user_data: schemas.UserCreate,) -> schemas.BaseUser:
+    async def register_new_user(self, user_data: schemas.UserCreate,) -> schemas.BaseUser:
         if user_data.password == user_data.password_repeat:
             user = models.User(
                 name=user_data.name,
@@ -94,7 +96,7 @@ class AuthService:
                 username=user_data.username,
                 hashed_password=self.hash_password(user_data.password))
             self.session.add(user)
-            self.session.flush()
+            await self.session.commit()
             return schemas.BaseUser(username=user.username, email=user.email)
 
     def authenticate_user(self, username: str, password: str) -> schemas.Token:
@@ -102,7 +104,7 @@ class AuthService:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Incorrect username or password',
             headers={'WWW-Authenticate': 'Bearer'})
-        user = (self.session.query(models.User).filter(models.User.username == username).first())
+        user = select(models.User).where(models.User.username == username)
         if not user:
             raise exception
         if not self.verify_password(password, user.password_hash):
