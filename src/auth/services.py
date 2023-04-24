@@ -115,3 +115,15 @@ class AuthService:
         if not self.verify_password(password, user.hashed_password):
             raise exception
         return self.create_token(user)
+
+    async def change_user(self, data_user: schemas.UserUpdate, user: schemas.User) -> schemas.BaseUser:
+        user = await self.session.execute(select(models.User).where(models.User.username == user.username))
+        user = user.scalar()
+        user.email = data_user.email
+        user.username = data_user.username
+        user.hashed_password = self.hash_password(data_user.password)
+        user.name = data_user.name
+        user.surnameuser = data_user.surname
+        self.session.add(user)
+        await self.session.commit()
+        return schemas.BaseUser(username=user.username, email=user.email)

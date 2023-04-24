@@ -7,6 +7,11 @@ class BaseUser(BaseModel):
     username: str
 
 
+class UserUpdate(BaseUser):
+    password: str
+    name: str
+    surname: str
+
 class UserCreate(BaseUser):
     password: str
     password_repeat: str
