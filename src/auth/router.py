@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Form, status
 from fastapi.security import OAuth2PasswordRequestForm  # Это форма регистрации и авторизации
-
 from auth.schemas import Token, UserCreate, User, BaseUser
 from auth.services import AuthService, get_current_user
 
@@ -27,6 +26,6 @@ async def sign_in(
         auth_data.password)
 
 
-@router.get('/user/', response_model=User)
+@router.get('/profile/', response_model=User)
 def get_user(user: User = Depends(get_current_user)):
     return user

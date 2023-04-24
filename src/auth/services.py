@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from fastapi import Depends, HTTPException, status
+from fastapi.encoders import jsonable_encoder
 
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -12,7 +13,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from sqlalchemy.orm import Session
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
+from starlette.responses import JSONResponse
 
 from auth import models, schemas
 
@@ -20,10 +22,10 @@ from auth import models, schemas
 from database import get_session
 from config_app import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/sign-in/')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/core/login/')
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
+def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.User:
     return AuthService.verify_token(token)
 
 
@@ -44,7 +46,7 @@ class AuthService:
 
     @classmethod
     # Функция валидации токена который пришел из запроса 
-    def verify_token(cls, token: str) -> models.User:
+    def verify_token(cls, token: str) -> schemas.User:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Could not validate credentials',
@@ -61,7 +63,7 @@ class AuthService:
         user_data = payload.get('user')
 
         try:
-            user = models.User.parse_obj(user_data)
+            user = schemas.User.parse_obj(user_data)
         except ValidationError:
             raise exception from None
 
@@ -107,7 +109,7 @@ class AuthService:
             detail='Incorrect username or password',
             headers={'WWW-Authenticate': 'Bearer'})
         user = await self.session.execute(select(models.User).where(models.User.username == username))
-        user = user.scalars().one()
+        user = user.scalar()
         if not user:
             raise exception
         if not self.verify_password(password, user.hashed_password):
