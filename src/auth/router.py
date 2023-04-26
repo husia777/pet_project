@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, Form, status
 from fastapi.security import OAuth2PasswordRequestForm  # Это форма регистрации и авторизации
 from auth.schemas import Token, UserCreate, User, BaseUser, UserUpdate
 from auth.services import AuthService, get_current_user
-
+from fastapi.responses import Response, RedirectResponse
+from starlette.status import HTTP_204_NO_CONTENT
 router = APIRouter(
     prefix='/core',
     tags=['core'],
@@ -24,6 +25,12 @@ async def sign_in(
     return await auth_service.authenticate_user(
         auth_data.username,
         auth_data.password)
+
+@router.get("/logout/")
+async def logout(response : Response):
+  response = Response(status_code = HTTP_204_NO_CONTENT)
+  response.delete_cookie(key ='access_token')
+  return response
 
 
 @router.get('/profile/', response_model=User)

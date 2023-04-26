@@ -4,7 +4,7 @@ import os
 load_dotenv()
 from pydantic import BaseSettings
 
-
+SQLALCHEMY_DATABASE_URL = os.environ.get('SQLALCHEMY_DATABASE_URL')
 class Settings(BaseSettings):
     server_host: str = '127.0.0.1'
     server_port: int = 8000

@@ -1,6 +1,12 @@
 version: "3.9"
 
 services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 1377:80
+    depends_on:
+      - api
   front:
     depends_on:
       - api
@@ -14,7 +20,9 @@ services:
       - postgres
     command: alembic upgrade head &&  uvicorn main:app --host 127.0.0.1:8000
     ports:
-      - 8000:8000
+      - 3000:3000
+    env_file:
+      - .env
     volumes:
       - ./:/usr/src/app
       - ./backend/core/migrations:/usr/src/app/backend/core/migrations
