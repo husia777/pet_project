@@ -30,7 +30,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> schemas.User:
 
 
 class AuthService:
-    # создание подключения
+    #  создание подключения
     def __init__(self, session: AsyncSession = Depends(get_session)):
         self.session = session
 
@@ -40,12 +40,12 @@ class AuthService:
         return bcrypt.verify(plain_password, hashed_password)
 
     @classmethod
-    # Функция хеширования  пароля 
+    # Функция хеширования  пароля
     def hash_password(cls, password: str) -> str:
         return bcrypt.hash(password)
 
     @classmethod
-    # Функция валидации токена который пришел из запроса 
+    # Функция валидации токена который пришел из запроса
     def verify_token(cls, token: str) -> schemas.User:
         exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
